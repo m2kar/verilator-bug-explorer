@@ -1,12 +1,10 @@
 import { Issue, Version } from '@/types';
-import { readFile } from 'fs/promises';
-import { join } from 'path';
 
 export async function loadIssues(): Promise<Issue[]> {
   try {
-    const filePath = join(process.cwd(), 'public', 'data', 'issues.json');
-    const data = await readFile(filePath, 'utf-8');
-    return JSON.parse(data).issues || [];
+    const response = await fetch('/api/issues', { next: { revalidate: 60 } });
+    const data = await response.json();
+    return data.issues || [];
   } catch (error) {
     console.error('Error loading issues:', error);
     return [];
@@ -15,9 +13,8 @@ export async function loadIssues(): Promise<Issue[]> {
 
 export async function loadVersions(): Promise<Version[]> {
   try {
-    const filePath = join(process.cwd(), 'public', 'data', 'versions.json');
-    const data = await readFile(filePath, 'utf-8');
-    return JSON.parse(data) || [];
+    const response = await fetch('/api/versions', { next: { revalidate: 60 } });
+    return await response.json();
   } catch (error) {
     console.error('Error loading versions:', error);
     return [];
