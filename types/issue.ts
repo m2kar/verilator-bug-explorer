@@ -1,0 +1,31 @@
+export type IssueStatus =
+  | 'reproduce_success'
+  | 'not_a_bug'
+  | 'no_testcase'
+  | 'reproduce_failed'
+  | 'pending'
+  | 'fetching_issue'
+  | 'analyzing_issue'
+  | 'testing_single'
+  | 'testing_all';
+
+export interface VersionResult {
+  version: string;
+  reproduced: boolean;
+  exitCode: number;
+  summary: string;
+}
+
+export interface Issue {
+  id: number;
+  title: string;
+  status: IssueStatus;
+  type: 'issue' | 'pull_request';
+  labels: string[];
+  createdAt: string;
+  author: string;
+  summary?: string;
+  firstBuggyVersion?: string;
+  firstFixedVersion?: string;
+  versions: VersionResult[];
+}
