@@ -1,18 +1,32 @@
-import { loadIssues } from '@/lib/data';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 import { formatStatus } from '@/lib/format';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import type { Issue } from '@/types/issue';
 
+async function loadIssuesServer(): Promise<Issue[]> {
+  try {
+    const filePath = join(process.cwd(), 'public', 'data', 'issues.json');
+    const data = await readFile(filePath, 'utf-8');
+    return JSON.parse(data).issues || [];
+  } catch (error) {
+    console.error('Error loading issues:', error);
+    return [];
+  }
+}
+
 export async function generateStaticParams() {
-  const issues = await loadIssues();
-  return issues.map((issue) => ({ id: issue.id.toString() }));
+  const issues = await loadIssuesServer();
+  return issues
+    .filter((issue) => issue.id != null)
+    .map((issue) => ({ id: issue.id.toString() }));
 }
 
 export const dynamic = 'force-static';
 
 export default async function IssueDetailPage({ params }: { params: { id: string } }) {
-  const issues = await loadIssues();
+  const issues = await loadIssuesServer();
   const id = parseInt(params.id);
   const issue = issues.find(i => i.id === id) || null;
 
