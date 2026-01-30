@@ -8,7 +8,7 @@ export function searchIssues(issues: Issue[], query: string): Issue[] {
   const lowerQuery = query.toLowerCase();
   return issues.filter(issue => 
     issue.title.toLowerCase().includes(lowerQuery) ||
-    issue.summary?.toLowerCase().includes(lowerQuery)
+    (typeof issue.summary === 'string' && issue.summary.toLowerCase().includes(lowerQuery))
   );
 }
 

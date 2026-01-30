@@ -16,6 +16,17 @@ export interface VersionResult {
   summary: string;
 }
 
+type SummaryContent = {
+  type: string;
+  reason: string;
+};
+
+type SummaryData = {
+  not_a_bug?: SummaryContent;
+  no_testcase?: SummaryContent;
+  [key: string]: SummaryContent | undefined;
+};
+
 export interface Issue {
   id: number;
   title: string;
@@ -24,7 +35,7 @@ export interface Issue {
   labels: string[];
   createdAt: string;
   author: string;
-  summary?: string;
+  summary?: string | SummaryData;
   firstBuggyVersion?: string;
   firstFixedVersion?: string;
   versions: VersionResult[];
