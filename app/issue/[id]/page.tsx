@@ -92,7 +92,22 @@ export default async function IssueDetailPage({ params }: { params: Promise<{ id
               <CardTitle>概览</CardTitle>
             </CardHeader>
             <CardContent>
-              <p>{issue.summary}</p>
+              {typeof issue.summary === 'string' ? (
+                <p>{issue.summary}</p>
+              ) : (
+                <div className="space-y-2">
+                  {Object.entries(issue.summary).map(([key, value]) => (
+                    <div key={key}>
+                      {typeof value === 'object' && 'type' in value && 'reason' in value && (
+                        <div>
+                          <p className="font-semibold">{value.type}</p>
+                          <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">{value.reason}</p>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              )}
               <div className="mt-4 flex items-center gap-3 flex-wrap">
                 {issue.firstBuggyVersion && (
                   <div className="flex items-center gap-2">
