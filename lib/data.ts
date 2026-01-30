@@ -1,35 +1,28 @@
 import { Issue, Version } from '@/types';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
 
- export async function loadIssues(): Promise<Issue[]> {
-   try {
-     const response = await fetch('/data/issues.json');
-     if (!response.ok) {
-       console.error('Failed to load issues.json:', response.status, response.statusText);
-       return [];
-     }
-     const data = await response.json();
-     console.log('Loaded issues:', data);
-     return data.issues || [];
-   } catch (error) {
-     console.error('Error loading issues:', error);
-     return [];
-   }
- }
+export async function loadIssues(): Promise<Issue[]> {
+  try {
+    const filePath = join(process.cwd(), 'public', 'data', 'issues.json');
+    const data = await readFile(filePath, 'utf-8');
+    return JSON.parse(data).issues || [];
+  } catch (error) {
+    console.error('Error loading issues:', error);
+    return [];
+  }
+}
 
- export async function loadVersions(): Promise<Version[]> {
-   try {
-     const response = await fetch('/data/versions.json');
-     if (!response.ok) {
-       console.error('Failed to load versions.json:', response.status, response.statusText);
-       return [];
-     }
-     const data = await response.json();
-     return data || [];
-   } catch (error) {
-     console.error('Error loading versions:', error);
-     return [];
-   }
- }
+export async function loadVersions(): Promise<Version[]> {
+  try {
+    const filePath = join(process.cwd(), 'public', 'data', 'versions.json');
+    const data = await readFile(filePath, 'utf-8');
+    return JSON.parse(data) || [];
+  } catch (error) {
+    console.error('Error loading versions:', error);
+    return [];
+  }
+}
 
 export async function getIssueById(id: number): Promise<Issue | null> {
   const issues = await loadIssues();
