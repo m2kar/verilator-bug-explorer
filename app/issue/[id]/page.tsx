@@ -25,9 +25,10 @@ export async function generateStaticParams() {
 
 export const dynamic = 'force-static';
 
-export default async function IssueDetailPage({ params }: { params: { id: string } }) {
+export default async function IssueDetailPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id: idParam } = await params;
   const issues = await loadIssuesServer();
-  const id = parseInt(params.id);
+  const id = parseInt(idParam);
   const issue = issues.find(i => i.id === id) || null;
 
   if (!issue) {
